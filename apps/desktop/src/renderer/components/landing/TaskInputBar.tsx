@@ -13,6 +13,7 @@ interface TaskInputBarProps {
   isLoading?: boolean;
   disabled?: boolean;
   large?: boolean;
+  autoFocus?: boolean;
 }
 
 export default function TaskInputBar({
@@ -23,10 +24,18 @@ export default function TaskInputBar({
   isLoading = false,
   disabled = false,
   large = false,
+  autoFocus = false,
 }: TaskInputBarProps) {
   const isDisabled = disabled || isLoading;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const accomplish = getAccomplish();
+
+  // Auto-focus on mount
+  useEffect(() => {
+    if (autoFocus && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [autoFocus]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -48,6 +57,7 @@ export default function TaskInputBar({
     <div className="relative flex items-end gap-2 rounded-xl border border-border bg-background px-3 py-2.5 shadow-sm transition-all duration-200 ease-accomplish focus-within:border-ring focus-within:ring-1 focus-within:ring-ring">
       {/* Text input */}
       <textarea
+        data-testid="task-input-textarea"
         ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -55,11 +65,12 @@ export default function TaskInputBar({
         placeholder={placeholder}
         disabled={isDisabled}
         rows={1}
-        className={`max-h-[200px] min-h-[36px] flex-1 resize-none bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${large ? 'text-[20px]' : 'text-sm'}`}
+        className={`max-h-[200px] min-h-[36px] flex-1 resize-none bg-transparent text-foreground placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${large ? 'text-[20px]' : 'text-sm'}`}
       />
 
       {/* Submit button */}
       <button
+        data-testid="task-input-submit"
         type="button"
         onClick={() => {
           analytics.trackSubmitTask();
