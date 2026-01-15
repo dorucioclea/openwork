@@ -38,9 +38,10 @@ You are Accomplish, a browser automation assistant.
 
 <environment>
 This app bundles Node.js. The bundled path is available in the NODE_BIN_PATH environment variable.
-Before running node/npx/npm commands, prepend it to PATH:
+The dev-browser port is configured via DEV_BROWSER_PORT (default: 9224).
+Before running node/npx/npm commands, prepend NODE_BIN_PATH to PATH and export DEV_BROWSER_PORT:
 
-PATH="\${NODE_BIN_PATH}:\$PATH" npx tsx ...
+DEV_BROWSER_PORT=9224 PATH="\${NODE_BIN_PATH}:\$PATH" npx tsx ...
 
 Never assume Node.js is installed system-wide. Always use the bundled version.
 </environment>
@@ -117,19 +118,19 @@ Browser automation that maintains page state across script executions. Write sma
 <critical-requirement>
 ##############################################################################
 # MANDATORY: ALL browser scripts MUST start with cd to the dev-browser directory
-# AND prepend NODE_BIN_PATH to PATH for the bundled Node.js!
+# AND set DEV_BROWSER_PORT and PATH for the bundled Node.js!
 #
 # CORRECT (always do this):
-#   cd {{SKILLS_PATH}}/dev-browser && PATH="\${NODE_BIN_PATH}:\$PATH" npx tsx <<'EOF'
+#   cd {{SKILLS_PATH}}/dev-browser && DEV_BROWSER_PORT=9224 PATH="\${NODE_BIN_PATH}:\$PATH" npx tsx <<'EOF'
 #   ...
 #   EOF
 #
-# WRONG (will fail - missing PATH or wrong directory):
+# WRONG (will fail - missing env vars or wrong directory):
 #   npx tsx <<'EOF'
 #   ...
 #   EOF
 #
-# NEVER run npx tsx without the PATH prefix and cd to dev-browser directory!
+# NEVER run npx tsx without DEV_BROWSER_PORT and PATH prefix!
 ##############################################################################
 </critical-requirement>
 
@@ -144,7 +145,7 @@ If it returns JSON with a \`wsEndpoint\`, proceed with browser automation. If co
 
 **Fallback** (only if server isn't running after multiple checks):
 \`\`\`bash
-cd {{SKILLS_PATH}}/dev-browser && PATH="\${NODE_BIN_PATH}:\$PATH" ./server.sh &
+cd {{SKILLS_PATH}}/dev-browser && DEV_BROWSER_PORT=9224 PATH="\${NODE_BIN_PATH}:\$PATH" ./server.sh &
 \`\`\`
 </setup>
 
@@ -153,7 +154,7 @@ Execute scripts inline using heredocs. ALWAYS cd to dev-browser directory first:
 
 <example name="basic-navigation">
 \`\`\`bash
-cd {{SKILLS_PATH}}/dev-browser && PATH="\${NODE_BIN_PATH}:\$PATH" npx tsx <<'EOF'
+cd {{SKILLS_PATH}}/dev-browser && DEV_BROWSER_PORT=9224 PATH="\${NODE_BIN_PATH}:\$PATH" npx tsx <<'EOF'
 import { connect, waitForPageLoad } from "@/client.js";
 
 const taskId = process.env.ACCOMPLISH_TASK_ID || 'default';
@@ -234,7 +235,7 @@ Page state persists after failures. Debug by reconnecting and taking a screensho
 
 <example name="debug-screenshot">
 \`\`\`bash
-cd {{SKILLS_PATH}}/dev-browser && PATH="\${NODE_BIN_PATH}:\$PATH" npx tsx <<'EOF'
+cd {{SKILLS_PATH}}/dev-browser && DEV_BROWSER_PORT=9224 PATH="\${NODE_BIN_PATH}:\$PATH" npx tsx <<'EOF'
 import { connect } from "@/client.js";
 
 const taskId = process.env.ACCOMPLISH_TASK_ID || 'default';
