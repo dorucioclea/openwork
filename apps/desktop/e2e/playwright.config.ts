@@ -1,8 +1,8 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './e2e/specs',
-  outputDir: './e2e/test-results',
+  testDir: './specs',
+  outputDir: './test-results',
 
   // Serial execution (Electron single-instance)
   workers: 1,
@@ -18,10 +18,10 @@ export default defineConfig({
   // Retry on CI
   retries: process.env.CI ? 2 : 0,
 
-  // Reporters
+  // Reporters (paths relative to config file location)
   reporter: [
-    ['html', { outputFolder: './e2e/html-report' }],
-    ['json', { outputFile: './e2e/test-results.json' }],
+    ['html', { outputFolder: './html-report' }],
+    ['json', { outputFile: './test-results.json' }],
     ['list']
   ],
 
