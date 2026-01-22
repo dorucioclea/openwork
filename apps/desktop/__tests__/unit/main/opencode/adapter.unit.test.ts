@@ -294,6 +294,10 @@ describe('OpenCode Adapter Module', () => {
 
         await adapter.startTask({ prompt: 'Test' });
 
+        // After startTask, we should have 'loading' progress
+        expect(progressEvents.length).toBe(1);
+        expect(progressEvents[0].stage).toBe('loading');
+
         const stepStartMessage: OpenCodeStepStartMessage = {
           type: 'step_start',
           part: {
@@ -307,9 +311,9 @@ describe('OpenCode Adapter Module', () => {
         // Act
         mockPtyInstance.simulateData(JSON.stringify(stepStartMessage) + '\n');
 
-        // Assert
-        expect(progressEvents.length).toBe(1);
-        expect(progressEvents[0].stage).toBe('init');
+        // Assert - now we should have 'loading' + 'connecting' progress events
+        expect(progressEvents.length).toBe(2);
+        expect(progressEvents[1].stage).toBe('connecting');
       });
 
       it('should emit tool-use event on tool_call message', async () => {
